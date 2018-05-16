@@ -21,3 +21,4 @@ COPY genotyphi.jar /genotyphi
 WORKDIR /data
 
 ENTRYPOINT ["java","-jar","/genotyphi/genotyphi.jar"]
+

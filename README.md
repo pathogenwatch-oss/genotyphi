@@ -42,15 +42,6 @@ unzip code-genotyphi-master.zip
 ```
 cd genotyphi
 docker build -t genotyphi-builder -f Dockerfile .
-# The next command actually builds genotyphi as a JAR and as a container
-docker run -it --rm --name genotyphi -v /var/run/docker.sock:/var/run/docker.sock -v "$(pwd)":/usr/src/mymaven -v ~/.docker:/root/.docker -w /usr/src/mymaven genotyphi-builder mvn package
-```
-Or, for faster future builds, create a docker volume (2nd command) and use it for future builds (third command):
-```
-docker build -t genotyphi-builder -f Dockerfile .
-docker volume create --name maven-repo
-# Use this command for faster future builds.
-docker run -it --rm --name genotyphi -v /var/run/docker.sock:/var/run/docker.sock -v "$(pwd)":/usr/src/mymaven -v maven-repo:/root/.m2 -v ~/.docker:/root/.docker -w /usr/src/mymaven genotyphi-builder mvn package
 ```
 
 At this point you can use [Docker](#running-with-docker) or run it directly from the [terminal](#running-directly) (requires JAVA 8 & blastn to be installed as well).

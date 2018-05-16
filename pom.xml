@@ -120,48 +120,48 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>${genotyphi.df-mvn-plugin.version}</version>
-                <executions>
-                    <!-- for now all images will be explicitly tagged -->
-                    <execution>
-                        <id>build-latest-image</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <configuration>
-                            <tag>latest</tag>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>tag-latest</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>tag</goal>
-                        </goals>
-                        <configuration>
-                            <tag>${jgitver.calculated_version}</tag>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>push-tagged-image</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
-                        <configuration>
-                            <tag>${jgitver.calculated_version}</tag>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <contextDirectory>build/</contextDirectory>
-                    <repository>${genotyphi.docker-repository}</repository>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.spotify</groupId>-->
+                <!--<artifactId>dockerfile-maven-plugin</artifactId>-->
+                <!--<version>${genotyphi.df-mvn-plugin.version}</version>-->
+                <!--<executions>-->
+                    <!--&lt;!&ndash; for now all images will be explicitly tagged &ndash;&gt;-->
+                    <!--<execution>-->
+                        <!--<id>build-latest-image</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>build</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<tag>latest</tag>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>tag-latest</id>-->
+                        <!--<phase>install</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>tag</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<tag>${jgitver.calculated_version}</tag>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>push-tagged-image</id>-->
+                        <!--<phase>install</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>push</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<tag>${jgitver.calculated_version}</tag>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<contextDirectory>build/</contextDirectory>-->
+                    <!--<repository>${genotyphi.docker-repository}</repository>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
