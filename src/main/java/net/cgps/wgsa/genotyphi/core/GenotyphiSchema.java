@@ -25,36 +25,8 @@ public class GenotyphiSchema extends Jsonnable {
     return this.genes.stream().map(gene -> new AbstractMap.SimpleImmutableEntry<>(gene.getSequenceId(), gene));
   }
 
-  public enum Depth {
-    PRIMARY(0), CLADE(1), SUBCLADE(2), GROUP(3), SUBGROUP(4);
-
-    private final int index;
-
-    Depth(final int index) {
-
-      this.index = index;
-    }
-
-    public static Depth maxDepth() {
-
-      return Stream.of(Depth.values()).max(Comparator.comparingInt(Depth::getIndex)).get();
-    }
-
-    public static Optional<Depth> toDepth(final int levels) {
-
-      return Stream.of(Depth.values()).filter(depth -> (depth.getIndex() + 1) == levels).findFirst();
-    }
-
-    public int getIndex() {
-
-      return this.index;
-    }
-  }
-
   public static class GenotyphiGroup {
 
-    // Deepest level of the genotyphi codes is 4.
-    private static final int maxDepth = Depth.maxDepth().getIndex() + 1;
     private final int depth;
     private final List<String> code;
 
@@ -73,11 +45,6 @@ public class GenotyphiSchema extends Jsonnable {
     public static GenotyphiGroup build(final String code) {
 
       final String[] codeArr = code.split("\\.");
-      if (maxDepth < codeArr.length) {
-        throw new RuntimeException("Invalid code for Genotyphi (too many levels " + codeArr.length + "): " + code);
-      }
-
-      final Depth depth = Depth.toDepth(codeArr.length).orElseThrow(() -> new RuntimeException("Not a recognised number of levels: " + codeArr.length));
       return new GenotyphiGroup(codeArr.length, Arrays.asList(codeArr));
     }
 
