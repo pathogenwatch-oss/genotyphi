@@ -20,18 +20,13 @@ public class GenotyphiSchema extends Jsonnable {
     this.genes = genes;
   }
 
-  public Collection<GenotyphiGene> getGenes() {
-
-    return this.genes;
-  }
-
   public Stream<Map.Entry<String, GenotyphiGene>> asEntries() {
 
     return this.genes.stream().map(gene -> new AbstractMap.SimpleImmutableEntry<>(gene.getSequenceId(), gene));
   }
 
   public enum Depth {
-    PRIMARY(0), CLADE(1), SUBCLADE(2);
+    PRIMARY(0), CLADE(1), SUBCLADE(2), GROUP(3), SUBGROUP(4);
 
     private final int index;
 
@@ -42,7 +37,7 @@ public class GenotyphiSchema extends Jsonnable {
 
     public static Depth maxDepth() {
 
-      return Stream.of(Depth.values()).sorted(Comparator.comparingInt(Depth::getIndex).reversed()).findFirst().get();
+      return Stream.of(Depth.values()).max(Comparator.comparingInt(Depth::getIndex)).get();
     }
 
     public static Optional<Depth> toDepth(final int levels) {
@@ -58,18 +53,18 @@ public class GenotyphiSchema extends Jsonnable {
 
   public static class GenotyphiGroup {
 
-    // Deepest level of the genotyphi codes is 3.
+    // Deepest level of the genotyphi codes is 4.
     private static final int maxDepth = Depth.maxDepth().getIndex() + 1;
-    private final Depth depth; // 1 - 3
+    private final int depth;
     private final List<String> code;
 
     @SuppressWarnings("unused")
     private GenotyphiGroup() {
 
-      this(Depth.PRIMARY, Collections.emptyList());
+      this(0, Collections.emptyList());
     }
 
-    private GenotyphiGroup(final Depth depth, final List<String> code) {
+    private GenotyphiGroup(final int depth, final List<String> code) {
 
       this.depth = depth;
       this.code = code;
@@ -83,25 +78,17 @@ public class GenotyphiSchema extends Jsonnable {
       }
 
       final Depth depth = Depth.toDepth(codeArr.length).orElseThrow(() -> new RuntimeException("Not a recognised number of levels: " + codeArr.length));
-      return new GenotyphiGroup(depth, Arrays.asList(codeArr));
+      return new GenotyphiGroup(codeArr.length, Arrays.asList(codeArr));
     }
 
-    public List<String> getCode() {
-
-      return this.code;
-    }
-
-    public Depth getDepth() {
+    public int getDepth() {
 
       return this.depth;
     }
 
     @Override
     public int hashCode() {
-
-      int result = this.depth.hashCode();
-      result = (31 * result) + this.code.hashCode();
-      return result;
+      return Objects.hash(depth, code);
     }
 
     @Override

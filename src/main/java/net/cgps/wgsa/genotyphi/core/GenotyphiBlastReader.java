@@ -1,6 +1,5 @@
 package net.cgps.wgsa.genotyphi.core;
 
-import net.cgps.wgsa.genotyphi.GenotyphiResult;
 import net.cgps.wgsa.genotyphi.lib.Mutation;
 import net.cgps.wgsa.genotyphi.lib.MutationSearchResult;
 import org.slf4j.Logger;
@@ -98,7 +97,7 @@ public class GenotyphiBlastReader implements Function<Stream<MutationSearchResul
         .peek(group -> this.logger.debug("Group: {}", group.toString()))
         .collect(Collectors.toSet());
 
-    final GenotyphiResult.AggregatedAssignments potentialGroups = FixNesting.buildDefault().apply(collectedGroups);
+    final Collection<GenotyphiSchema.GenotyphiGroup> potentialGroups = FixNesting.buildDefault().apply(collectedGroups);
 
     return new GenotyphiResultData(
         new ResolveGenotyphi().apply(potentialGroups),
@@ -111,12 +110,12 @@ public class GenotyphiBlastReader implements Function<Stream<MutationSearchResul
   public static class GenotyphiResultData {
 
     private final String type;
-    private final GenotyphiResult.AggregatedAssignments aggregatedAssignments;
+    private final Collection<GenotyphiSchema.GenotyphiGroup> aggregatedAssignments;
     private final Collection<Map.Entry<String, Collection<GenotyphiMutation>>> genotyphiMutations;
     private final Collection<MutationSearchResult> blastResults;
     private final int foundLoci;
 
-    GenotyphiResultData(final String type, final GenotyphiResult.AggregatedAssignments aggregatedAssignments, final Collection<Map.Entry<String, Collection<GenotyphiMutation>>> genotyphiMutations, final Collection<MutationSearchResult> results, final int foundLoci) {
+    GenotyphiResultData(final String type, final Collection<GenotyphiSchema.GenotyphiGroup> aggregatedAssignments, final Collection<Map.Entry<String, Collection<GenotyphiMutation>>> genotyphiMutations, final Collection<MutationSearchResult> results, final int foundLoci) {
 
       this.type = type;
       this.aggregatedAssignments = aggregatedAssignments;
@@ -125,7 +124,7 @@ public class GenotyphiBlastReader implements Function<Stream<MutationSearchResul
       this.foundLoci = foundLoci;
     }
 
-    public GenotyphiResult.AggregatedAssignments getAggregatedAssignments() {
+    public Collection<GenotyphiSchema.GenotyphiGroup> getAggregatedAssignments() {
 
       return this.aggregatedAssignments;
     }

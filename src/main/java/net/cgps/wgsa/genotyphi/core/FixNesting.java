@@ -12,9 +12,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>, GenotyphiResult.AggregatedAssignments> {
+public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>, Collection<GenotyphiSchema.GenotyphiGroup>> {
 
   private final Collection<Pair<GenotyphiSchema.GenotyphiGroup, GenotyphiSchema.GenotyphiGroup>> subcladeNestPairs;
+  private static final GenotyphiSchema.GenotyphiGroup groupZero = GenotyphiSchema.GenotyphiGroup.build("0");
+  private static final GenotyphiSchema.GenotyphiGroup groupOne = GenotyphiSchema.GenotyphiGroup.build("1");
+  private static final GenotyphiSchema.GenotyphiGroup groupTwo = GenotyphiSchema.GenotyphiGroup.build("2");
 
   public FixNesting(final Collection<Pair<GenotyphiSchema.GenotyphiGroup, GenotyphiSchema.GenotyphiGroup>> subcladeNestPairs) {
 
@@ -46,12 +49,24 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
 //	if ('2.3.5' in subclades) and ('2.3.3' in subclades):
 //      subclades.remove('2.3.3')
 //
+//  if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
+//    subclades.remove('4.3.1')
+//  if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
+//    subclades.remove('4.3.1')
+//
+//  if('4.3.1.1.P1' in subclades) and ('4.3.1' in subclades):
+//    subclades.remove('4.3.1')
+//  if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
+//    subclades.remove('4.3.1.1')
+
+// Left it kept, right is removed.
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2.2"), GenotyphiSchema.GenotyphiGroup.build("2.3")));
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("3.5.4"), GenotyphiSchema.GenotyphiGroup.build("3.5.3")));
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2.3.2"), GenotyphiSchema.GenotyphiGroup.build("2.3.1")));
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2.3.3"), GenotyphiSchema.GenotyphiGroup.build("2.3.5")));
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2"), GenotyphiSchema.GenotyphiGroup.build("3")));
-
+    pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("4.3.1"), GenotyphiSchema.GenotyphiGroup.build("4.3.1.1.P1")));
+    pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("4.3.1.1"), GenotyphiSchema.GenotyphiGroup.build("4.3.1.1.P1")));
     return new FixNesting(pairs);
   }
 
@@ -89,52 +104,30 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
 //      subclades.append('3.2.1')  # anything with no subclade, and 3.2.1 SNP NOT called, belongs in 3.2.1 with CT18
 
   @Override
-  public GenotyphiResult.AggregatedAssignments apply(final Set<GenotyphiSchema.GenotyphiGroup> genotyphiGroups) {
+  public Collection<GenotyphiSchema.GenotyphiGroup> apply(final Set<GenotyphiSchema.GenotyphiGroup> genotyphiGroups) {
 
 
     // Do the simple filters.
-    this.subcladeNestPairs.forEach(pair -> this.dependentRemoveGroup(genotyphiGroups).accept(pair.getLeft(), pair.getRight()));
+    final Collection<GenotyphiSchema.GenotyphiGroup> filteredGroups = this.subcladeNestPairs
+        .stream()
+        // Both groups found in pairing
+        .filter(pair -> genotyphiGroups.contains(pair.getLeft()) && genotyphiGroups.contains(pair.getRight()))
+        .map(Pair::getRight)
+        .collect(Collectors.toSet());
+
+    final Collection<GenotyphiSchema.GenotyphiGroup> selectedGroups = genotyphiGroups
+        .stream()
+        .filter(filteredGroups::contains)
+        .collect(Collectors.toSet());
 
     // CT18 fixes.
-    final List<GenotyphiSchema.GenotyphiGroup> primaryGroups = genotyphiGroups
-        .stream()
-        .filter(group -> GenotyphiSchema.Depth.PRIMARY == group.getDepth())
-        .collect(Collectors.toList());
-
-    final GenotyphiSchema.GenotyphiGroup groupZero = GenotyphiSchema.GenotyphiGroup.build("0");
-    final GenotyphiSchema.GenotyphiGroup groupOne = GenotyphiSchema.GenotyphiGroup.build("1");
-    final GenotyphiSchema.GenotyphiGroup groupTwo = GenotyphiSchema.GenotyphiGroup.build("2");
-
     // Group 0 is indicated by SNPs from group 1 & 2
-    if (primaryGroups.size() == 2) {
-      if (primaryGroups.contains(groupOne) && primaryGroups.contains(groupTwo)) {
-        primaryGroups.clear();
-        primaryGroups.add(groupZero);
-      }
+    if (selectedGroups.contains(groupOne) && selectedGroups.contains(groupTwo)) {
+      selectedGroups.remove(groupOne);
+      selectedGroups.remove(groupTwo);
+      selectedGroups.add(groupZero);
     }
 
-    final Set<GenotyphiSchema.GenotyphiGroup> clades = genotyphiGroups.stream().filter(group -> GenotyphiSchema.Depth.CLADE == group.getDepth()).collect(Collectors.toSet());
-
-    final Set<GenotyphiSchema.GenotyphiGroup> subclades = genotyphiGroups.stream().filter(group -> GenotyphiSchema.Depth.SUBCLADE == group.getDepth()).collect(Collectors.toSet());
-
-    return new GenotyphiResult.AggregatedAssignments(primaryGroups, clades, subclades);
+    return selectedGroups;
   }
-
-  /**
-   * Returns a function where if group (b) is present in the Set of groups then (a) is removed.
-   *
-   * @param genotyphiGroups
-   * @return
-   */
-  private BiConsumer<GenotyphiSchema.GenotyphiGroup, GenotyphiSchema.GenotyphiGroup> dependentRemoveGroup(final Set<GenotyphiSchema.GenotyphiGroup> genotyphiGroups) {
-
-    return (a, b) -> {
-
-      if (genotyphiGroups.stream().anyMatch(b::equals)) {
-        final Collection<GenotyphiSchema.GenotyphiGroup> overlappedGroups = genotyphiGroups.stream().filter(a::equals).collect(Collectors.toList());
-        overlappedGroups.forEach(genotyphiGroups::remove);
-      }
-    };
-  }
-
 }

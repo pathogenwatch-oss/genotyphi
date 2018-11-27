@@ -16,7 +16,7 @@ public class GenotyphiResult extends Jsonnable {
   private final String assemblyId;
   private final String genotype;
   private final Collection<Map.Entry<String, Collection<GenotyphiMutation>>> genotyphiMutations;
-  private final AggregatedAssignments data;
+  private final Collection<GenotyphiSchema.GenotyphiGroup> assignments;
   private final Collection<MutationSearchResult> blastResults;
   private final int foundLoci;
 
@@ -24,15 +24,15 @@ public class GenotyphiResult extends Jsonnable {
   @SuppressWarnings("unused")
   private GenotyphiResult() {
 
-    this("", "", Collections.emptyList(), null, Collections.emptyList(), Integer.MIN_VALUE);
+    this("", "", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Integer.MIN_VALUE);
   }
 
-  public GenotyphiResult(final String assemblyId, final String genotype, final Collection<Map.Entry<String, Collection<GenotyphiMutation>>> genotyphiMutations, final AggregatedAssignments data, final Collection<MutationSearchResult> blastResults, final int foundLoci) {
+  public GenotyphiResult(final String assemblyId, final String genotype, final Collection<Map.Entry<String, Collection<GenotyphiMutation>>> genotyphiMutations, final Collection<GenotyphiSchema.GenotyphiGroup> assignments, final Collection<MutationSearchResult> blastResults, final int foundLoci) {
 
     this.assemblyId = assemblyId;
     this.genotype = genotype;
     this.genotyphiMutations = genotyphiMutations;
-    this.data = data;
+    this.assignments = assignments;
     this.blastResults = blastResults;
     this.foundLoci = foundLoci;
   }
@@ -40,11 +40,6 @@ public class GenotyphiResult extends Jsonnable {
   public String getGenotype() {
 
     return this.genotype;
-  }
-
-  public AggregatedAssignments getAggregatedAssignments() {
-
-    return this.data;
   }
 
   public Collection<Map.Entry<String, Collection<GenotyphiMutation>>> getGenotyphiMutations() {
@@ -66,64 +61,7 @@ public class GenotyphiResult extends Jsonnable {
     return this.assemblyId;
   }
 
-  public static class AggregatedAssignments {
-
-    private final List<GenotyphiSchema.GenotyphiGroup> primaryGroups;
-    private final Collection<GenotyphiSchema.GenotyphiGroup> cladeGroups;
-    private final Collection<GenotyphiSchema.GenotyphiGroup> subcladeGroups;
-
-    @SuppressWarnings("unused")
-    private AggregatedAssignments() {
-
-      this(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-    }
-
-    public AggregatedAssignments(final List<GenotyphiSchema.GenotyphiGroup> primaryGroups, final Collection<GenotyphiSchema.GenotyphiGroup> cladeGroups, final Collection<GenotyphiSchema.GenotyphiGroup> subcladeGroups) {
-
-      this.primaryGroups = primaryGroups;
-      this.cladeGroups = cladeGroups;
-      this.subcladeGroups = subcladeGroups;
-    }
-
-
-    public String toString() {
-
-      return "GenotyphiSet{" +
-          "primaryGroups=" + this.primaryGroups +
-          ", cladeGroups=" + this.cladeGroups +
-          ", subcladeGroups=" + this.subcladeGroups +
-          '}';
-    }
-
-    public List<GenotyphiSchema.GenotyphiGroup> getPrimaryGroups() {
-
-      return this.primaryGroups;
-    }
-
-    public String toPrimaryString() {
-
-      return this.primaryGroups.get(0).toCode();
-    }
-
-    public Collection<GenotyphiSchema.GenotyphiGroup> getCladeGroups() {
-
-      return this.cladeGroups;
-    }
-
-    public String toCladeString() {
-
-      return this.cladeGroups.stream().map(GenotyphiSchema.GenotyphiGroup::toCode).collect(Collectors.joining(","));
-    }
-
-    public Collection<GenotyphiSchema.GenotyphiGroup> getSubcladeGroups() {
-
-      return this.subcladeGroups;
-    }
-
-    public String toSubcladeString() {
-
-      return this.subcladeGroups.stream().map(GenotyphiSchema.GenotyphiGroup::toCode).collect(Collectors.joining(","));
-    }
+  public Collection<GenotyphiSchema.GenotyphiGroup> getAssignments() {
+    return this.assignments;
   }
-
 }
