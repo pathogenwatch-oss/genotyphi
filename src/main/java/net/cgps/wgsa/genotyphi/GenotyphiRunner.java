@@ -1,6 +1,6 @@
 package net.cgps.wgsa.genotyphi;
 
-import net.cgps.wgsa.genotyphi.core.GenotyphiBlastReader;
+import net.cgps.wgsa.genotyphi.core.BlastProcessor;
 import net.cgps.wgsa.genotyphi.core.GenotyphiSchema;
 import net.cgps.wgsa.genotyphi.lib.BlastRunner;
 import net.cgps.wgsa.genotyphi.lib.MutationReader;
@@ -38,7 +38,7 @@ public class GenotyphiRunner implements Function<Path, GenotyphiResult> {
         "-best_hit_overhang", "0.4"
     };
 
-    final GenotyphiBlastReader.GenotyphiResultData resultData = new GenotyphiBlastReader(this.schema).apply(new BlastRunner<>(new MutationReader()).apply(command));
+    final BlastProcessor.GenotyphiResultData resultData = new BlastProcessor(this.schema).apply(new BlastRunner<>(new MutationReader()).apply(command));
 
     // Convert the result output into the JSON-ready object.
     return new GenotyphiResult(assemblyId, resultData.getType(), resultData.getGenotyphiMutations(), resultData.getAggregatedAssignments(), resultData.getBlastResults(), resultData.getFoundLoci());

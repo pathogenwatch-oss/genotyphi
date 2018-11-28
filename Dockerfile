@@ -1,4 +1,4 @@
-FROM maven:3 AS builder
+FROM maven:3.5-jdk-10 AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		curl \
@@ -16,19 +16,17 @@ ADD *.sh /usr/local/bin/
 
 COPY settings.template.xml /root/.m2/settings.xml
 
-RUN /usr/local/bin/run_replace.sh
+RUN /usr/local/bin/run_replace.sh \
+    && mkdir -p /genotyphi/build/resources
 
 COPY . /usr/src/mymaven/
 
 WORKDIR /usr/src/mymaven/
 
-RUN mvn clean package
+RUN mvn clean package \
+    && mv /usr/src/mymaven/build/genotyphi.jar /genotyphi/build/
 
-RUN mkdir /genotyphi/ \
-    && mv /usr/src/mymaven/build/genotyphi.jar /genotyphi/genotyphi.jar \
-    && mv /usr/src/mymaven/build/resources /genotyphi
-
-FROM openjdk:8-jre
+FROM openjdk:10-jre
 
 RUN mkdir -p /opt/blast/bin
 
@@ -36,7 +34,7 @@ COPY --from=builder /opt/blast/bin/blastn /opt/blast/bin
 
 ENV PATH /opt/blast/bin:$PATH
 
-COPY --from=builder /genotyphi /genotyphi
+COPY --from=builder /genotyphi/build/ /genotyphi/
 
 RUN mkdir /data
 

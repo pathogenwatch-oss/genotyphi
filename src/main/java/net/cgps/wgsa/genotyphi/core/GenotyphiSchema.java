@@ -20,6 +20,10 @@ public class GenotyphiSchema extends Jsonnable {
     this.genes = genes;
   }
 
+  public Collection<GenotyphiGene> getGenes() {
+    return this.genes;
+  }
+
   public Stream<Map.Entry<String, GenotyphiGene>> asEntries() {
 
     return this.genes.stream().map(gene -> new AbstractMap.SimpleImmutableEntry<>(gene.getSequenceId(), gene));
@@ -51,6 +55,10 @@ public class GenotyphiSchema extends Jsonnable {
     public int getDepth() {
 
       return this.depth;
+    }
+
+    public List<String> getCode() {
+      return this.code;
     }
 
     @Override
@@ -86,6 +94,20 @@ public class GenotyphiSchema extends Jsonnable {
     public String toCode() {
 
       return String.join(".", this.code);
+    }
+
+    public boolean isParentOf(final GenotyphiGroup included) {
+
+      if (included.getDepth() <= this.getDepth()) {
+        return false;
+      }
+
+      for (int i = 0; i < this.code.size(); i++) {
+        if (! this.code.get(i).equals(included.code.get(i))) {
+          return false;
+        }
+      }
+      return true;
     }
   }
 

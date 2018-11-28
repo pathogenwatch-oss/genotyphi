@@ -49,15 +49,6 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
 //	if ('2.3.5' in subclades) and ('2.3.3' in subclades):
 //      subclades.remove('2.3.3')
 //
-//  if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
-//    subclades.remove('4.3.1')
-//  if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
-//    subclades.remove('4.3.1')
-//
-//  if('4.3.1.1.P1' in subclades) and ('4.3.1' in subclades):
-//    subclades.remove('4.3.1')
-//  if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
-//    subclades.remove('4.3.1.1')
 
 // Left it kept, right is removed.
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2.2"), GenotyphiSchema.GenotyphiGroup.build("2.3")));
@@ -65,8 +56,6 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2.3.2"), GenotyphiSchema.GenotyphiGroup.build("2.3.1")));
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2.3.3"), GenotyphiSchema.GenotyphiGroup.build("2.3.5")));
     pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("2"), GenotyphiSchema.GenotyphiGroup.build("3")));
-    pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("4.3.1"), GenotyphiSchema.GenotyphiGroup.build("4.3.1.1.P1")));
-    pairs.add(new ImmutablePair<>(GenotyphiSchema.GenotyphiGroup.build("4.3.1.1"), GenotyphiSchema.GenotyphiGroup.build("4.3.1.1.P1")));
     return new FixNesting(pairs);
   }
 
@@ -107,7 +96,7 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
   public Collection<GenotyphiSchema.GenotyphiGroup> apply(final Set<GenotyphiSchema.GenotyphiGroup> genotyphiGroups) {
 
 
-    // Do the simple filters.
+    // Identify the horizontal nestings present, and use to filter the groups
     final Collection<GenotyphiSchema.GenotyphiGroup> filteredGroups = this.subcladeNestPairs
         .stream()
         // Both groups found in pairing
@@ -117,7 +106,7 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
 
     final Collection<GenotyphiSchema.GenotyphiGroup> selectedGroups = genotyphiGroups
         .stream()
-        .filter(filteredGroups::contains)
+        .filter(group -> !filteredGroups.contains(group))
         .collect(Collectors.toSet());
 
     // CT18 fixes.

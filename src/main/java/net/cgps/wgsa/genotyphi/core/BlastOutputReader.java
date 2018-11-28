@@ -20,6 +20,8 @@ public class BlastOutputReader implements Function<BufferedReader, BlastOutput> 
 
     final String packageName = BlastOutput.class.getPackage().getName();
 
+    System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+
     try {
       final JAXBContext jc = JAXBContext.newInstance(packageName);
       final Unmarshaller unmarshaller = jc.createUnmarshaller();

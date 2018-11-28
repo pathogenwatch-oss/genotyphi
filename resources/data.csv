@@ -68,5 +68,5 @@ Group,Allele within group,Gene,Product,Nucleotide,Note
 4.2.3,T,STY1683,putative oxidoreductase,502,
 4.3.1,T,STY2513,anaerobic glycerol-3-phosphate dehydrogenase subunit A,1047,BiP33
 4.3.1.1,C,STY1238,putative secreted protein,939,
-4.3.1.2,G,STY3830,alcohol dehydrogenase,4562,
-4.3.1.1.P1,A,STY0961,seryl-tRNA synthetase,1568,4.3.1.1.P1 is nested within 4.3.1 and 4.3.1.1
+4.3.1.2,G,STY3836,putative lipoprotein,1040,
+4.3.1.1.P1,A,STY0962,dmsA,39,4.3.1.1.P1 is nested within 4.3.1 and 4.3.1.1

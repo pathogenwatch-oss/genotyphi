@@ -103,7 +103,7 @@ public class GenotyphiMain {
 
     final Option logLevel = Option.builder("l").longOpt("log-level").hasArg().argName("Logging level").desc("INFO, DEBUG etc").build();
 
-    final Option outputOption = Option.builder("o").longOpt("outfile").argName("Create output file").desc("Use this flag if you want the result written to STDOUT rather than file.").build();
+    final Option outputOption = Option.builder("o").longOpt("out").argName("Write to STDOUT").desc("Use this flag if you want the result written to STDOUT rather than file.").build();
 
     final Option formatOption = Option.builder("f").longOpt("format").hasArg().argName("Select the output format from " + Format.getFormats()).build();
 

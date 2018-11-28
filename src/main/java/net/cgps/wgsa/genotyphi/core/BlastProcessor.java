@@ -14,13 +14,12 @@ import java.util.stream.Stream;
 /**
  * Converts the lib matches from genotyphi BLAST to the result document.
  */
-public class GenotyphiBlastReader implements Function<Stream<MutationSearchResult>, GenotyphiBlastReader.GenotyphiResultData> {
+public class BlastProcessor implements Function<Stream<MutationSearchResult>, BlastProcessor.GenotyphiResultData> {
 
-  private final Logger logger = LoggerFactory.getLogger(GenotyphiBlastReader.class);
+  private final Logger logger = LoggerFactory.getLogger(BlastProcessor.class);
   private final Map<String, GenotyphiGene> genotyphiSchema;
-  private final Comparator<MutationSearchResult> BLAST_SORTER = Comparator.comparingDouble(a -> a.getBlastSearchStatistics().getPercentIdentity());
 
-  public GenotyphiBlastReader(final GenotyphiSchema genotyphiSchema) {
+  public BlastProcessor(final GenotyphiSchema genotyphiSchema) {
 
     this.genotyphiSchema = genotyphiSchema.asEntries().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
@@ -30,7 +29,7 @@ public class GenotyphiBlastReader implements Function<Stream<MutationSearchResul
 
     final AtomicInteger counter = new AtomicInteger(0);
 
-    // filter to best match only.
+    // Remove matches that don't contain typing region.
     final Collection<MutationSearchResult> results = searchResults
         .collect(
             Collectors.groupingBy(
@@ -60,7 +59,7 @@ public class GenotyphiBlastReader implements Function<Stream<MutationSearchResul
                   // Keep where >0 variants found.
                   return (!foundVariants.isEmpty());
                 })
-                .sorted(this.BLAST_SORTER)
+                .sorted(Comparator.comparingDouble(a -> a.getBlastSearchStatistics().getPercentIdentity()))
         )
         .collect(Collectors.toList());
 

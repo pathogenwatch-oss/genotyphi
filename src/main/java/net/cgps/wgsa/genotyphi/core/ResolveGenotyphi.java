@@ -2,9 +2,7 @@ package net.cgps.wgsa.genotyphi.core;
 
 import net.cgps.wgsa.genotyphi.GenotyphiResult;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,11 +13,10 @@ public class ResolveGenotyphi implements Function<Collection<GenotyphiSchema.Gen
   @Override
   public String apply(final Collection<GenotyphiSchema.GenotyphiGroup> aggregatedAssignments) {
 
-    // Get the deepest level
     final int deepestLevel = aggregatedAssignments
         .stream()
         .map(GenotyphiSchema.GenotyphiGroup::getDepth)
-        .min(Integer::compareTo)
+        .max(Integer::compareTo)
         .orElse(-1);
 
     return -1 == deepestLevel ?
@@ -28,8 +25,38 @@ public class ResolveGenotyphi implements Function<Collection<GenotyphiSchema.Gen
                .stream()
                .filter(group -> deepestLevel == group.getDepth())
                .map(GenotyphiSchema.GenotyphiGroup::toCode)
+               .sorted()
                .collect(Collectors.joining(","));
 
+//    if (aggregatedAssignments.isEmpty()) {
+//      return "";
+//    }
+//
+//    // Report all groups that aren't a parent of another that is present
+//
+//    final List<GenotyphiSchema.GenotyphiGroup> sorted = new ArrayList<>(aggregatedAssignments);
+//
+//    sorted.sort(Comparator.comparingInt(GenotyphiSchema.GenotyphiGroup::getDepth).reversed());
+//
+//    final Collection<GenotyphiSchema.GenotyphiGroup> nameGroups = new ArrayList<>(5);
+//
+//    for (final GenotyphiSchema.GenotyphiGroup newGroup : sorted) {
+//      boolean keep = true;
+//      for (final GenotyphiSchema.GenotyphiGroup included : nameGroups) {
+//        if (newGroup.isParentOf(included)) {
+//          keep = false;
+//          break;
+//        }
+//      }
+//      if (keep) {
+//        nameGroups.add(newGroup);
+//      }
+//    }
+//
+//    return nameGroups
+//        .stream()
+//        .map(GenotyphiSchema.GenotyphiGroup::toCode)
+//        .collect(Collectors.joining(","));
   }
 
 }

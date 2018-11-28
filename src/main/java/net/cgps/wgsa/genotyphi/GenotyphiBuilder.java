@@ -18,7 +18,13 @@ public class GenotyphiBuilder {
   public void run(final Path inputPath, final Path databasePath) {
 
     // Builds blast database & genotyphi schema doc.
-    final GenotyphiSchema genotyphiSchema = new SchemaBuilder().apply(Paths.get(inputPath.toString(), "data.csv"));
+    final Path dataCsv = Paths.get(inputPath.toString(), "data.csv");
+
+    if (!Files.exists(dataCsv)) {
+      throw new RuntimeException("Unable to find file {}" + dataCsv.toAbsolutePath().toString());
+    }
+
+    final GenotyphiSchema genotyphiSchema = new SchemaBuilder().apply(dataCsv);
 
     try {
       final Path schemaPath = Paths.get(databasePath.toString(), "schema.jsn");
@@ -29,6 +35,13 @@ public class GenotyphiBuilder {
       throw new RuntimeException(e);
     }
 
-    new MakeBlastDB(databasePath).accept("genotyphi", Paths.get(inputPath.toString(), "genes.fa"));
+    final Path fastaPath = Paths.get(inputPath.toString(), "genes.fa");
+
+    if (!Files.exists(dataCsv)) {
+      throw new RuntimeException("Unable to find file {}" + fastaPath.toAbsolutePath().toString());
+    }
+
+    new MakeBlastDB(databasePath).accept("genotyphi", fastaPath);
+    this.logger.info("Written blast DB to {} using {}", databasePath.toAbsolutePath().toString(), fastaPath.toAbsolutePath().toString());
   }
 }

@@ -1,6 +1,7 @@
 package net.cgps.wgsa.genotyphi.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 public class MutationSearchResult {
 
   // Don't use a char[] here as the internal elements aren't immutable.
+  @JsonUnwrapped
   private final BlastSearchStatistics blastSearchStatistics;
   private final List<Mutation> mutations;
   private final String queryMatchSequence;
