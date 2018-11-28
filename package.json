@@ -1,6 +1,6 @@
 {
   "name": "cgps-genotyphi",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "CGPS implementation of [Genotyphi by Kat Holt _et al_](https://github.com/katholt/genotyphi) for assembled genomes. Genotyphi is the implementation of the genotyping framework for _Salmonella_ Typhi by [Wong _et al_](https://www.nature.com/articles/ncomms12827/), which uses a curated set of mutations to assign strains to a particular labelled clade or subclade.",
   "main": "index.js",
   "directories": {
