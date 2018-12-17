@@ -101,7 +101,7 @@ public class FixNesting implements Function<Set<GenotyphiSchema.GenotyphiGroup>,
         .stream()
         // Both groups found in pairing
         .filter(pair -> genotyphiGroups.contains(pair.getLeft()) && genotyphiGroups.contains(pair.getRight()))
-        .map(Pair::getRight)
+        .map(Pair::getLeft)
         .collect(Collectors.toSet());
 
     final Collection<GenotyphiSchema.GenotyphiGroup> selectedGroups = genotyphiGroups
