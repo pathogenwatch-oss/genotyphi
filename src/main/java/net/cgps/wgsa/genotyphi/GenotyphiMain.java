@@ -66,7 +66,7 @@ public class GenotyphiMain {
           if (Files.isRegularFile(input)) {
             workingDirectory = input.toAbsolutePath().getParent();
             fastas = Collections.singletonList(input);
-            root.debug("Processing one file", input);
+            root.debug("Processing one file {}", input.toString());
           } else {
             fastas = new ArrayList<>(10000);
             try (final DirectoryStream<Path> stream = Files.newDirectoryStream(
@@ -120,20 +120,20 @@ public class GenotyphiMain {
 
   private void run(final Collection<Path> fastas, final Path workingDirectory, final boolean toStdout, final Path databasePath, final Format format) {
 
-    final GenotyphiSchema schema = new SchemaReader().apply(databasePath);
-
-    final GenotyphiRunner runner = new GenotyphiRunner(schema, databasePath);
-
     this.logger.info("Writing format {}", format.name().toLowerCase());
+
+    final GenotyphiSchema schema = new SchemaReader().apply(databasePath);
+    final GenotyphiRunner runner = new GenotyphiRunner(schema, databasePath);
+    final Consumer<GenotyphiResult> writer = this.getWriter(format, toStdout, workingDirectory);
 
     fastas
         .parallelStream()
         .peek(fasta -> this.logger.info("Typing {}", fasta.getFileName().toString()))
         .map(runner)
-        .forEach(this.getConsumer(format, toStdout, workingDirectory));
+        .forEach(writer);
   }
 
-  private Consumer<GenotyphiResult> getConsumer(final Format format, final boolean isToStdout, final Path workingDirectory) {
+  private Consumer<GenotyphiResult> getWriter(final Format format, final boolean isToStdout, final Path workingDirectory) {
 
     final Formatter formatter;
 
