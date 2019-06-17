@@ -11,11 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-public class GenotyphiBuilder {
+class GenotyphiBuilder {
 
   private final Logger logger = LoggerFactory.getLogger(GenotyphiBuilder.class);
 
-  public void run(final Path inputPath, final Path databasePath) {
+  void run(final Path inputPath, final Path databasePath) {
 
     // Builds blast database & genotyphi schema doc.
     final Path dataCsv = Paths.get(inputPath.toString(), "data.csv");
@@ -31,7 +31,7 @@ public class GenotyphiBuilder {
       this.logger.info("Writing schema to {}", schemaPath.toString());
       Files.write(schemaPath, genotyphiSchema.toJson().getBytes(), StandardOpenOption.CREATE);
     } catch (final IOException e) {
-      this.logger.error("Failed to write genotyphi {}", e);
+      this.logger.error("Failed to write genotyphi {}", e.getMessage());
       throw new RuntimeException(e);
     }
 
