@@ -53,9 +53,9 @@ Group,Allele within group,Gene,Product,Nucleotide,Note
 3.2.2,T,STY4741,probable sugar phosphotransferase,444,
 3.3,T,STY3527,conserved hypothetical protein,177,
 3.3.1,A,STY2413,cytidine deaminase,684,
-3.3.2,G,STY3641,guanosine-5'-triphosphate 3'-diphosphate pyrophosphatase,203,
-3.3.2.Bd1,A,STY2588,amino acid racemase,446,
-3.3.2.Bd2,A,STY2441,1-phosphofructokinase,470,
+3.3.2,G,STY3641,guanosine-5'-triphosphate 3'-diphosphate pyrophosphatase,224,
+3.3.2.Bd1,T,STY2588,amino acid racemase,378,
+3.3.2.Bd2,T,STY2441,1-phosphofructokinase,439,
 3.4,T,STY3316,hydrogenase-2 component protein,30,
 3.5,T,STY4063,deoxyuridine 5'-triphosphate nucleotidohydrolase,411,
 3.5.1,T,STY1918,hydrogenase-1 operon protein HyaF,738,
@@ -72,5 +72,5 @@ Group,Allele within group,Gene,Product,Nucleotide,Note
 4.3.1,T,STY2513,anaerobic glycerol-3-phosphate dehydrogenase subunit A,1047,BiP33
 4.3.1.1,C,STY1238,putative secreted protein,939,
 4.3.1.2,C,STY3836,putative lipoprotein,62,
-4.3.1.3,A,STY0554,ABC transporter permease,716,
+4.3.1.3,A,STY0554,ABC transporter permease,711,
 4.3.1.1.P1,A,STY0962,dmsA,39,4.3.1.1.P1 is nested within 4.3.1 and 4.3.1.1
