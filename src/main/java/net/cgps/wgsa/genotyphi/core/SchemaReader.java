@@ -10,6 +10,6 @@ public class SchemaReader implements Function<Path, GenotyphiSchema> {
   @Override
   public GenotyphiSchema apply(final Path path) {
 
-    return Jsonnable.fromJson(Paths.get(path.toString(), "schema.jsn").toFile(), GenotyphiSchema.class);
+    return Jsonnable.fromJson(Paths.get(path.toString(), "schema.json").toFile(), GenotyphiSchema.class);
   }
 }
