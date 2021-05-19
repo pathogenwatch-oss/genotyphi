@@ -27,7 +27,7 @@ class GenotyphiBuilder {
     final GenotyphiSchema genotyphiSchema = new SchemaBuilder().apply(dataCsv);
 
     try {
-      final Path schemaPath = Paths.get(databasePath.toString(), "schema.jsn");
+      final Path schemaPath = Paths.get(databasePath.toString(), "schema.json");
       this.logger.info("Writing schema to {}", schemaPath.toString());
       Files.write(schemaPath, genotyphiSchema.toJson().getBytes(), StandardOpenOption.CREATE);
     } catch (final IOException e) {

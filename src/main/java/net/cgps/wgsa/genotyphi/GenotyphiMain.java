@@ -97,7 +97,7 @@ public class GenotyphiMain {
 
     final Option assemblyListOption = Option.builder("i").longOpt("input").hasArg().argName("Assembly file(s)").desc("If a directory is provided then all FASTAs (.fna, .fa, .fasta) are searched.").build();
 
-    final Option buildModeOption = Option.builder("b").longOpt("buildMode").argName("Build Mode").desc("If provided then the genotyphi build mode will be executed. Build mode generates the blast databases (requireds makeblastdb to be on $PATH). The -i option can be used to set the input directory containing data.csv & genes.fa").build();
+    final Option buildModeOption = Option.builder("b").longOpt("buildMode").argName("Build Mode").desc("If provided then the genotyphi build mode will be executed. Build mode generates the blast databases (requires makeblastdb to be on $PATH). The -i option can be used to set the input directory containing data.csv & genes.fa").build();
 
     final Option resourceDirectoryOption = Option.builder("d").longOpt("database-directory").hasArg().argName("Database directory").desc("Location of the BLAST databases and resources for .").build();
 

@@ -26,7 +26,7 @@ WORKDIR /usr/src/mymaven/
 RUN mvn clean package \
     && mv /usr/src/mymaven/build/genotyphi.jar /genotyphi/build/
 
-FROM openjdk:10-jre
+FROM openjdk:11-jre
 
 RUN mkdir -p /opt/blast/bin
 
