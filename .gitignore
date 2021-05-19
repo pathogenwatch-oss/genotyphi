@@ -1,5 +1,8 @@
 build/resources/genotyphi.*
 
+examples/*.jsn
+examples/*.txt
+
 # Created by .ignore support plugin (hsz.mobi)
 ### JEnv template
 # JEnv local Java version configuration file
@@ -124,3 +127,4 @@ local.properties
 .worksheet
 
 /.idea
+/examples/2.1.7.1_genotyphi.jsn
