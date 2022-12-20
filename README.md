@@ -1,4 +1,5 @@
 # cgps-genotyphi
+
 CGPS implementation of [Genotyphi by Kat Holt _et al_](https://github.com/katholt/genotyphi) for assembled genomes. Genotyphi is the implementation of the genotyping framework for _Salmonella_ Typhi by [Wong _et al_](https://www.nature.com/articles/ncomms12827/), which uses a curated set of mutations to assign strains to a particular labelled clade or subclade.
 
 For a full description of Genotyphi and the schema please visit the above links.
@@ -15,19 +16,14 @@ For a full description of Genotyphi and the schema please visit the above links.
 
 CGPS-Genotyphi can be run as a JAVA programme (Linux/MacOS) or using Docker (all platforms).
 
-The simplest way to install and run CGPS-Genotyphi is via Docker with the following command:
-
-```
-docker run --rm -v $PWD:/data cgps/genotyphi -i [my_typhi_assembly.fasta] -o
-```
-
-If the latest version is not installed, Docker will pull it down from the central DockerHub repository before running it. If you want to use a specific version of genotyphi add the 'version tag' to the command as `cgps/genotyphi:v1.0.1`.
+Currently we don't provide access to prebuilt versions of the docker images, and you will have to follow the installation instructions below.
 
 Otherwise to install the programme follow either the Docker-based or Maven-based build instructions below.
 
 ### Docker-based Build (recommended)
 
 Requires:
+
 * Docker (Optional: Git for building from master with version tags)
 * Runs on any OS supported by Docker.
 
@@ -39,9 +35,10 @@ unzip code-genotyphi-master.zip
 ```
 
 2. Installation
+
 ```
 cd genotyphi
-docker build -t genotyphi-builder -f Dockerfile .
+docker build -t genotyphi -f Dockerfile .
 ```
 
 At this point you can use [Docker](#running-with-docker) or run it directly from the [terminal](#running-directly) (requires JAVA 8 & blastn to be installed as well).
@@ -49,9 +46,11 @@ At this point you can use [Docker](#running-with-docker) or run it directly from
 ### Maven Build
 
 Requires:
+
 * git, maven, java 8, makeblastdb (on $PATH)
 
 Optional:
+
 * blastn on $PATH (for running the unit tests)
 
 ```
@@ -68,7 +67,7 @@ At this point you can use [Docker](#running-with-docker) or run it directly from
 To create the Genotyphi container, run:
 
 1. cd build
-1. docker build -t genotyphi -f DockerFile .
+2. docker build -t genotyphi -f DockerFile .
 
 ### Running with Docker
 
@@ -85,10 +84,10 @@ To run genotyphi on all FASTA files in the local directory, with an output file 
 
 `docker run --rm -v $PWD:/data genotyphi -i .`
 
-If the FASTA files are in a different directory use 
+If the FASTA files are in a different directory use
 
 `docker run --rm -v /full/path/to/FASTAS/:/data registry.gitlab.com/cgps/cgps-genotyphi -i .`
- 
+
 NB "/data" is a protected folder for genotyphi, and is normally used to mount the local drive.
 
 To get the results to STDOUT rather than file:
@@ -106,19 +105,20 @@ NB not pretty printed, one record per line
 ## Output Format
 
 The output format can be selected using the `-f`/`-format` option. It defaults to `Text`.
+
 1. [Text](#text-format)
-1. [CSV](#csv-format)
-1. [JSON](#json-format)
-1. [Pretty JSON](#pretty-json-format)
-1. [Simple JSON](#simple-json-format)
+2. [CSV](#csv-format)
+3. [JSON](#json-format)
+4. [Pretty JSON](#pretty-json-format)
+5. [Simple JSON](#simple-json-format)
 
 ### Text Format
 
 The text format contains three lines:
- 
+
 1. The assembly ID
-1. The genotype
-1. The determining mutations: {geneName}_{location}{variant}_({associated genotype}) 
+2. The genotype
+3. The determining mutations: {geneName}_{location}{variant}_({associated genotype})
 
 ```
 Name: 007898
@@ -220,13 +220,13 @@ The same as the above JSON format, but without the BLAST results or aggregation 
 Container tags are automatically generated during the build phase by Maven using [jgitver](https://github.com/jgitver/jgitver).
 
 To create a "release tag" (i.e. not appended with "-SNAPSHOT") and push the resulting container to a remote Docker repository:
+
 ```
 git tag -a -m "My message" v1.0.0-rc4
 docker run -it --rm --name genotyphi -v /var/run/docker.sock:/var/run/docker.sock -v "$(pwd)":/usr/src/mymaven -v maven-repo:/root/.m2 -v ~/.docker:/root/.docker -w /usr/src/mymaven genotyphi-builder mvn install
 ```
 
 The Docker repository can be changed from the CGPS default by editing the `<genotyphi.docker-repository>` property in the top level `pom.xml`.
-
 
 # Acknowledgments
 
